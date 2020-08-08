@@ -67,11 +67,12 @@
     <p id="demo">还没变呢</p>
     <hr />
 
-    <p style="text-align:center;">
-        <TEXTAREA id="txt" class="huoxingwen" onFocus=OnEnter(this) onBlur=OnExit(this)>输入文字，点击下面转换火星文按钮在线转换</TEXTAREA>
+    <p>
+        <TEXTAREA id="txt" class="huoxingwen" onFocus=OnEnter(this) onBlur=OnExit(this) rows="10"
+            cols="30">输入文字，点击下面转换火星文按钮在线转换</TEXTAREA>
     </p>
 
-    <p class="is-3" style="text-align:center;">
+    <p>
         <input onclick="txt.value = convert(txt.value,charPYStr(),ftPYStr())" type="button" value="转换火星文">
         <input onclick="txt.value = convert(txt.value,ftPYStr(),charPYStr())" type="button" value="转换简体字">
         <input onclick="txt.value=''" type="button" value="清空">
