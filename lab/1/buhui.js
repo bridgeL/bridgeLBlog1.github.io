@@ -122,12 +122,12 @@ function make () {
 
     for (var i = 0; i < 10; i++) {
         str_o = '$' + i.toString();
+        idx = get_r_num(len(myword));
+        str_n = myword[idx];
         while (1) {
             if (str1.indexOf(str_o) < 0) {
                 break
             }
-            idx = get_r_num(len(myword));
-            str_n = myword[idx];
             str1 = str1.replace(str_o, str_n);
         }
     }
@@ -135,11 +135,11 @@ function make () {
 
     for (var i = 0; i < 10; i++) {
         str_o = '$#' + i.toString();
+        str_n = make();
         while (1) {
             if (str1.indexOf(str_o) < 0) {
                 break
             }
-            str_n = make();
             str1 = str1.replace(str_o, str_n);
         }
     }
