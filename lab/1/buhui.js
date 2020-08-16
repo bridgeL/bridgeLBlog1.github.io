@@ -122,8 +122,12 @@ function make () {
 
     for (var i = 0; i < 10; i++) {
         str_o = '$' + i.toString();
+        if (str1.indexOf(str_o) < 0) {
+            continue;
+        }
         idx = get_r_num(len(myword));
         str_n = myword[idx];
+
         while (1) {
             if (str1.indexOf(str_o) < 0) {
                 break
@@ -135,7 +139,12 @@ function make () {
 
     for (var i = 0; i < 10; i++) {
         str_o = '$#' + i.toString();
+        if (str1.indexOf(str_o) < 0) {
+            continue;
+        }
+
         str_n = make();
+
         while (1) {
             if (str1.indexOf(str_o) < 0) {
                 break
