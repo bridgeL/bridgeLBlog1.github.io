@@ -17,12 +17,26 @@
         function myfun() {
             alert('聊天室启动成功\n');
             txt.value = '聊天室启动成功\n';
+        };
+
+
+        var mytask;
+
+        function start() {
+            mytask = setInterval(run, 500);
+        };
+
+        function stop() {
+            clearInterval(mytask);
         }
+
 
         window.onload = myfun;
     </script>
 
-    <button onclick="run()">发送聊天</button>
+    <input type="button" value="开始聊天" style="width:100px;height:50px" onclick="start()">
+    <input type="button" value="结束聊天" style="width:100px;height:50px" onclick="stop()">
+
 </body>
 
 </html>
