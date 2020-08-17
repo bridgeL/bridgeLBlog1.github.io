@@ -1,0 +1,42 @@
+<html>
+
+<head>
+    <title>红晓音🍷的传送门(1173)</title>
+    <!-- <script src="bushi.js"></script> -->
+    <script type="text/javascript" src="DD.js">
+
+    </script>
+</head>
+
+<body>
+    <p>胡言乱语生成器</p>
+    <p>
+        <TEXTAREA id="txt" rows="22" cols="80">聊天室启动中...</TEXTAREA>
+    </p>
+    <script type="text/javascript">
+        function myfun() {
+            alert('聊天室启动成功\n');
+            txt.value = '聊天室启动成功\n';
+        };
+
+
+        var mytask;
+
+        function start() {
+            mytask = setInterval(run, 500);
+        };
+
+        function stop() {
+            clearInterval(mytask);
+        }
+
+
+        window.onload = myfun;
+    </script>
+
+    <input type="button" value="开始聊天" style="width:100px;height:50px" onclick="start()">
+    <input type="button" value="结束聊天" style="width:100px;height:50px" onclick="stop()">
+
+</body>
+
+</html>
