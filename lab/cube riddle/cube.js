@@ -1,4 +1,8 @@
+var diy_mode = 0;
+
 function rule_change() {
+    diy_mode = 0;
+
     var s = document.getElementById("state_num");
     var state_num = parseInt(s.options[s.selectedIndex].value);
     var t1 = document.getElementById("txt_rule")
@@ -14,6 +18,8 @@ function rule_change() {
 }
 
 function cube_change() {
+    diy_mode = 0;
+
     build_select();
 }
 
@@ -37,17 +43,42 @@ function test(n) {
     var rp = document.getElementById("rp" + String(n));
     var x = parseInt(rp.value);
 
+    if (diy_mode == 0) {
+        if (x > 0 && x < state_num) {
+            for (i = (n - 1 < 0) ? 0 : n - 1; i < cube_num && i <= n + 1; i++) {
+                var s = document.getElementById("s" + String(i));
+                s.selectedIndex = (s.selectedIndex + 1) % state_num;
+            }
 
-    if (x > 0 && x < state_num) {
+            x = (x + state_num - 1) % state_num;
+            rp.value = x;
+
+            return;
+
+        } else if (x == 0) {
+            diy_mode = 1;
+            document.getElementById('result').innerHTML = '自定义模式';
+        } else {
+            diy_mode = 1;
+            document.getElementById('result').innerHTML = '自定义模式';
+            for (i = 0; i < cube_num; i++) {
+                var rp = document.getElementById("rp" + String(i));
+                rp.value = 0;
+            }
+        }
+
+    } else {
+
+        x = (x + state_num + 1) % state_num;
+        rp.value = x;
+
         for (i = (n - 1 < 0) ? 0 : n - 1; i < cube_num && i <= n + 1; i++) {
             var s = document.getElementById("s" + String(i));
             s.selectedIndex = (s.selectedIndex + 1) % state_num;
         }
-
-        x = (x + state_num - 1) % state_num;
-        rp.value = x;
     }
 }
+
 
 function build_select() {
 
@@ -95,7 +126,7 @@ function build_select() {
     }
 
     fm = document.getElementById("fm2");
-    fm.innerHTML = ''
+    fm.innerHTML = '';
 
     i = 0;
     while (i < im) {
@@ -128,7 +159,7 @@ function start() {
     }
 
     document.getElementById('result').innerHTML = '计算中...';
-
+    diy_mode = 0;
 
     var i = 0,
         j = 0,
