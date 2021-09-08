@@ -17,6 +17,37 @@ function cube_change() {
     build_select();
 }
 
+function test(n) {
+    var s = document.getElementById("state_num");
+    var state_num = parseInt(s.options[s.selectedIndex].value);
+
+    var s = document.getElementById("cube_num");
+    var cube_num = parseInt(s.options[s.selectedIndex].value);
+
+    var i = 0;
+
+    // 获取方块初始值
+    var m = new Array(cube_num);
+    for (i = 0; i < cube_num; i++) {
+        var s = document.getElementById("s" + String(i));
+        m[i] = parseInt(s.options[s.selectedIndex].value);
+    }
+
+    // 获取按键初始值
+    var rp = document.getElementById("rp" + String(n));
+    var x = parseInt(rp.value);
+
+
+    if (x > 0 && x < state_num) {
+        for (i = (n - 1 < 0) ? 0 : n - 1; i < cube_num && i <= n + 1; i++) {
+            var s = document.getElementById("s" + String(i));
+            s.selectedIndex = (s.selectedIndex + 1) % state_num;
+        }
+
+        x = (x + state_num - 1) % state_num;
+        rp.value = x;
+    }
+}
 
 function build_select() {
 
@@ -69,17 +100,12 @@ function build_select() {
     i = 0;
     while (i < im) {
 
-        var sel = document.createElement("select");
-        sel.setAttribute("id", 'r' + String(i));
+        var sel = document.createElement("input");
+        sel.setAttribute("id", 'rp' + String(i));
+        sel.setAttribute("type", "button");
+        sel.setAttribute("value", "？");
         sel.setAttribute("style", "width:60px;height:60px;font-size:40px");
-
-        var op = document.createElement("option");
-        op.setAttribute("value", "0");
-        op.setAttribute("id", "rp" + String(i));
-        op.appendChild(document.createTextNode("？"));
-
-        sel.appendChild(op);
-
+        sel.setAttribute("onclick", "test(" + String(i) + ")");
         fm.appendChild(sel);
 
         i++;
@@ -170,7 +196,7 @@ function start() {
         // 显示
         for (i = 0; i < cube_num; i++) {
             var r = document.getElementById('rp' + String(i));
-            r.innerHTML = x[x_index * cube_num + i];
+            r.value = x[x_index * cube_num + i];
         }
         document.getElementById('result').innerHTML = '计算完毕';
 
@@ -215,14 +241,14 @@ function start() {
             // 显示
             for (i = 0; i < cube_num; i++) {
                 var r = document.getElementById('rp' + String(i));
-                r.innerHTML = x[i];
+                r.value = x[i];
             }
             document.getElementById('result').innerHTML = '计算完毕';
 
         } else {
             for (i = 0; i < cube_num; i++) {
                 var r = document.getElementById('rp' + String(i));
-                r.innerHTML = "？";
+                r.value = "？";
             }
             document.getElementById('result').innerHTML = '似乎无解呢~';
         }
