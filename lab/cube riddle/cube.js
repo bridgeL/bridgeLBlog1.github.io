@@ -3,29 +3,26 @@ var A;
 var menu_num, state_num, cube_num;
 
 function rule_change() {
-    diy_mode = 0;
-
     var s = document.getElementById("menu_num");
     menu_num = parseInt(s.options[s.selectedIndex].value);
-    state_num = (menu_num == 5) ? 3 : menu_num;
 
     var t1 = document.getElementById("txt_rule")
     if (menu_num == 3) {
         t1.innerHTML = '1-3对应花瓣个数';
+
     } else if (menu_num == 4) {
         t1.innerHTML = '北1 东2 南3 西4';
+
     } else if (menu_num == 5) {
         t1.innerHTML = '自定义状态数';
+        state_num = 3;
     } else {
         t1.innerHTML = '您尚未设定谜题类型';
     }
-
     build_ui();
 }
 
 function cube_change() {
-    diy_mode = 0;
-
     build_ui();
 }
 
@@ -36,7 +33,7 @@ function check() {
         return 0;
     }
 
-    state_num = (menu_num == 5) ? 3 : menu_num;
+    state_num = (menu_num == 5) ? state_num : menu_num;
 
     s = document.getElementById("cube_num");
     cube_num = parseInt(s.options[s.selectedIndex].value);
@@ -126,12 +123,12 @@ function input_state_num() {
         alert('必须是正数\n');
     } else {
         state_num = t;
+        build_ui();
     }
 }
 
 function build_ui() {
-
-    var fm, i, j;
+    diy_mode = 0;
 
     // 清屏
     document.getElementById('result').innerHTML = '';
@@ -140,6 +137,8 @@ function build_ui() {
     document.getElementById("fm2").innerHTML = '';
 
     if (check() == 0) { return; }
+
+    var fm, i, j;
 
     // 创建空白转换矩阵
     A = new Array(cube_num * cube_num);
@@ -166,7 +165,7 @@ function build_ui() {
         txt.type = "text";
         txt.id = "diy_state_num";
         txt.style = "width:30px";
-        txt.setAttribute("value", 3);
+        txt.setAttribute("value", state_num);
         txt.setAttribute("onchange", "input_state_num()");
         fm.appendChild(txt);
         fm.innerHTML += '<br>';
