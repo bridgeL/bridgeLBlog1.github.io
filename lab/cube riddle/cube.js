@@ -45,6 +45,8 @@ function test(n) {
 
     if (diy_mode == 0) {
         if (x > 0 && x < state_num) {
+            document.getElementById('result').innerHTML = '手动验证模式';
+
             for (i = (n - 1 < 0) ? 0 : n - 1; i < cube_num && i <= n + 1; i++) {
                 var s = document.getElementById("s" + String(i));
                 s.selectedIndex = (s.selectedIndex + 1) % state_num;
@@ -65,18 +67,20 @@ function test(n) {
                 var rp = document.getElementById("rp" + String(i));
                 rp.value = 0;
             }
-        }
-
-    } else {
-
-        x = (x + state_num + 1) % state_num;
-        rp.value = x;
-
-        for (i = (n - 1 < 0) ? 0 : n - 1; i < cube_num && i <= n + 1; i++) {
-            var s = document.getElementById("s" + String(i));
-            s.selectedIndex = (s.selectedIndex + 1) % state_num;
+            return;
         }
     }
+
+
+
+    x = (x + state_num + 1) % state_num;
+    rp.value = x;
+
+    for (i = (n - 1 < 0) ? 0 : n - 1; i < cube_num && i <= n + 1; i++) {
+        var s = document.getElementById("s" + String(i));
+        s.selectedIndex = (s.selectedIndex + 1) % state_num;
+    }
+
 }
 
 
