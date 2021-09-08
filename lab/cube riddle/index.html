@@ -10,7 +10,7 @@
     <script type="text/javascript" src="cube.js"></script>
     <script type="text/javascript" src="matrix.js"></script>
     <script type="text/javascript">
-        window.onload = build_select;
+        window.onload = build_ui;
     </script>
 </head>
 
@@ -18,10 +18,11 @@
     <p>钟离解谜器也不好使了？试试这个吧</p>
     <form>
         谜题类型:
-        <select id="state_num" style="width:120px;height:40px;" onchange="rule_change()">
+        <select id="menu_num" style="width:120px;height:40px;" onchange="rule_change()">
             <option value="0">请选择</option>
             <option value="3">三花瓣灯谜题</option>
             <option value="4">朝向一致谜题</option>
+            <option value="5">自定义变换矩阵</option>
         </select>
         <br> 方块数目:
         <select id="cube_num" style="width:120px;height:40px;" onchange="cube_change()">
@@ -31,6 +32,8 @@
             <option value="5">5</option>
         </select>
     </form>
+
+    <form id="fm0"></form>
 
     <p style="height:10px">请输入各个方块的初始状态:</p>
     <p id="txt_rule" style="font-size:10px">您尚未设定谜题类型</p>

@@ -1,34 +1,54 @@
 var diy_mode = 0;
+var A;
+var menu_num, state_num, cube_num;
 
 function rule_change() {
     diy_mode = 0;
 
-    var s = document.getElementById("state_num");
-    var state_num = parseInt(s.options[s.selectedIndex].value);
+    var s = document.getElementById("menu_num");
+    menu_num = parseInt(s.options[s.selectedIndex].value);
+    state_num = (menu_num == 5) ? 3 : menu_num;
+
     var t1 = document.getElementById("txt_rule")
-    if (state_num == 3) {
+    if (menu_num == 3) {
         t1.innerHTML = '1-3对应花瓣个数';
-    } else if (state_num == 4) {
+    } else if (menu_num == 4) {
         t1.innerHTML = '北1 东2 南3 西4';
+    } else if (menu_num == 5) {
+        t1.innerHTML = '自定义状态数';
     } else {
         t1.innerHTML = '您尚未设定谜题类型';
     }
 
-    build_select();
+    build_ui();
 }
 
 function cube_change() {
     diy_mode = 0;
 
-    build_select();
+    build_ui();
+}
+
+function check() {
+    var s = document.getElementById("menu_num");
+    menu_num = parseInt(s.options[s.selectedIndex].value);
+    if (menu_num == 0) {
+        return 0;
+    }
+
+    state_num = (menu_num == 5) ? 3 : menu_num;
+
+    s = document.getElementById("cube_num");
+    cube_num = parseInt(s.options[s.selectedIndex].value);
+    if (cube_num == 0) {
+        return 0;
+    }
+    return 1;
 }
 
 function test(n) {
-    var s = document.getElementById("state_num");
-    var state_num = parseInt(s.options[s.selectedIndex].value);
 
-    var s = document.getElementById("cube_num");
-    var cube_num = parseInt(s.options[s.selectedIndex].value);
+    if (check() == 0) { return; }
 
     var i = 0;
 
@@ -39,7 +59,7 @@ function test(n) {
         m[i] = parseInt(s.options[s.selectedIndex].value);
     }
 
-    // 获取按键初始值
+    // 获取n号按键初始值x
     var rp = document.getElementById("rp" + String(n));
     var x = parseInt(rp.value);
 
@@ -47,93 +67,149 @@ function test(n) {
         if (x > 0 && x < state_num) {
             document.getElementById('result').innerHTML = '手动验证模式';
 
-            for (i = (n - 1 < 0) ? 0 : n - 1; i < cube_num && i <= n + 1; i++) {
-                var s = document.getElementById("s" + String(i));
-                s.selectedIndex = (s.selectedIndex + 1) % state_num;
+            for (i = 0; i < cube_num; i++) {
+                if (A[i * cube_num + n] == 1) {
+                    var s = document.getElementById("s" + String(i));
+                    s.selectedIndex = (s.selectedIndex + 1) % state_num;
+                }
             }
 
             x = (x + state_num - 1) % state_num;
             rp.value = x;
-
-            return;
-
         } else if (x == 0) {
+
+            for (i = 0; i < cube_num; i++) {
+                var t = parseInt(document.getElementById("rp" + String(i)).value);
+                if (t != 0) {
+                    return;
+                }
+            }
+
             diy_mode = 1;
             document.getElementById('result').innerHTML = '自定义模式';
         } else {
+
             diy_mode = 1;
             document.getElementById('result').innerHTML = '自定义模式';
             for (i = 0; i < cube_num; i++) {
-                var rp = document.getElementById("rp" + String(i));
-                rp.value = 0;
+                document.getElementById("rp" + String(i)).value = 0;
             }
-            return;
+
+        }
+    } else {
+        // diy模式
+        x = (x + state_num + 1) % state_num;
+        rp.value = x;
+
+        for (i = 0; i < cube_num; i++) {
+            if (A[i * cube_num + n] == 1) {
+                var s = document.getElementById("s" + String(i));
+                s.selectedIndex = (s.selectedIndex + 1) % state_num;
+            }
         }
     }
-
-
-
-    x = (x + state_num + 1) % state_num;
-    rp.value = x;
-
-    for (i = (n - 1 < 0) ? 0 : n - 1; i < cube_num && i <= n + 1; i++) {
-        var s = document.getElementById("s" + String(i));
-        s.selectedIndex = (s.selectedIndex + 1) % state_num;
-    }
-
 }
 
+function input_A(n) {
+    var s = document.getElementById("t" + String(n));
+    var t = parseInt(s.value);
+    if (t == 0 || t == 1) {
+        A[n] = t;
+    } else {
+        alert('只能输入0或1\n');
+    }
+}
 
-function build_select() {
+function input_state_num() {
+    var t = parseInt(document.getElementById('diy_state_num').value);
+    if (t < 0) {
+        alert('必须是正数\n');
+    } else {
+        state_num = t;
+    }
+}
 
+function build_ui() {
+
+    var fm, i, j;
+
+    // 清屏
     document.getElementById('result').innerHTML = '';
+    document.getElementById("fm0").innerHTML = '';
     document.getElementById("fm1").innerHTML = '';
     document.getElementById("fm2").innerHTML = '';
 
-    var s = document.getElementById("state_num");
-    var state_num = parseInt(s.options[s.selectedIndex].value);
-    if (state_num == 0) {
-        return
+    if (check() == 0) { return; }
+
+    // 创建空白转换矩阵
+    A = new Array(cube_num * cube_num);
+    for (i = 0; i < cube_num; i++) {
+        for (j = 0; j < cube_num; j++) {
+            A[i * cube_num + j] = 0;
+        }
     }
 
-    s = document.getElementById("cube_num");
-    var cube_num = parseInt(s.options[s.selectedIndex].value);
-    if (cube_num == 0) {
-        return
+    if (menu_num < 5) {
+        // 生成预设变换矩阵
+        for (i = 0; i < cube_num; i++) {
+            for (j = 0; j < cube_num; j++) {
+                if (j >= i - 1 && j <= i + 1) {
+                    A[i * cube_num + j] = 1;
+                }
+            }
+        }
+    } else {
+        // 生成自定义变换矩阵输入
+        fm = document.getElementById("fm0");
+        fm.innerHTML += '输入自定义状态数目<br>';
+        var txt = document.createElement("input");
+        txt.type = "text";
+        txt.id = "diy_state_num";
+        txt.style = "width:30px";
+        txt.setAttribute("value", 3);
+        txt.setAttribute("onchange", "input_state_num()");
+        fm.appendChild(txt);
+        fm.innerHTML += '<br>';
+        fm.innerHTML += '输入自定义变换矩阵<br>';
+
+        for (i = 0; i < cube_num; i++) {
+            for (j = 0; j < cube_num; j++) {
+                var txt = document.createElement("input");
+                txt.type = "text";
+                txt.id = "t" + String(i * cube_num + j);
+                txt.style = "width:30px";
+                txt.setAttribute("value", 0);
+                txt.setAttribute("onchange", "input_A(" + (i * cube_num + j) + ")");
+                fm.appendChild(txt);
+            }
+            fm.innerHTML += '<br>';
+        }
     }
 
-    var fm = document.getElementById("fm1");
-
-    var i = 0,
-        j = 0,
-        im = cube_num,
-        jm = state_num;
-    var sel_id = '';
-    while (i < im) {
+    // 生成方块序列
+    fm = document.getElementById("fm1");
+    for (i = 0; i < cube_num; i++) {
 
         var sel = document.createElement("select");
         sel.setAttribute("id", 's' + String(i));
         sel.setAttribute("style", "width:60px;height:60px;font-size:40px");
 
-        j = 0;
-        while (j < jm) {
+        for (j = 0; j < state_num; j++) {
             var op = document.createElement("option");
             op.setAttribute("value", j);
             op.appendChild(document.createTextNode(String(j + 1)));
             sel.appendChild(op);
-            j++;
         }
 
         fm.appendChild(sel);
-
-        i++;
     }
 
+    // 生成结果序列
     fm = document.getElementById("fm2");
     fm.innerHTML = '';
 
     i = 0;
-    while (i < im) {
+    while (i < cube_num) {
 
         var sel = document.createElement("input");
         sel.setAttribute("id", 'rp' + String(i));
@@ -148,18 +224,16 @@ function build_select() {
 }
 
 function start() {
-    var s = document.getElementById("state_num");
-    var state_num = parseInt(s.options[s.selectedIndex].value);
-    if (state_num == 0) {
-        alert('您尚未设定状态数目\n');
-        return
-    }
+    if (check() == 0) {
+        if (state_num == 0) {
+            alert('您尚未设定谜题类型\n');
+            return;
+        }
 
-    s = document.getElementById("cube_num");
-    var cube_num = parseInt(s.options[s.selectedIndex].value);
-    if (cube_num == 0) {
-        alert('您尚未设定方块数目\n');
-        return
+        if (cube_num == 0) {
+            alert('您尚未设定方块数目\n');
+            return;
+        }
     }
 
     document.getElementById('result').innerHTML = '计算中...';
@@ -168,18 +242,6 @@ function start() {
     var i = 0,
         j = 0,
         t = 0;
-
-    // 创建转换矩阵
-    var A = new Array(cube_num * cube_num);
-    for (i = 0; i < cube_num; i++) {
-        for (j = 0; j < cube_num; j++) {
-            if (j >= i - 1 && j <= i + 1) {
-                A[i * cube_num + j] = 1;
-            } else {
-                A[i * cube_num + j] = 0;
-            }
-        }
-    }
 
     // 获取方块初始值
     var m = new Array(cube_num);
@@ -205,7 +267,7 @@ function start() {
 
             // 计算变换后的向量,并取模
             for (i = 0; i < cube_num; i++) {
-                p[i] = state_num;
+                p[i] = state_num * 4;
                 for (j = 0; j < cube_num; j++) {
                     p[i] += Ar[i * cube_num + j] * n[j];
                 }
