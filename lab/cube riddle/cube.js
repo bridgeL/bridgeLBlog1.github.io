@@ -113,6 +113,7 @@ function input_A(n) {
     if (t == 0 || t == 1) {
         A[n] = t;
     } else {
+        document.getElementById("t" + String(n)).value = 0;
         alert('只能输入0或1\n');
     }
 }
